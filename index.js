@@ -1,8 +1,14 @@
 import express from 'express';
 import Hello from "./Hello.js"
 import Lab5 from "./Lab5/index.js";
+import cors from "cors";
 
 const app = express()
+// 所有的请求都会经过这里，cors里面配置了很多细节的东西。
+// 使用cors，默认是允许所有跨domains的请求
+app.use(cors());
+// 验证请求里是否存在一个可以被解析为JsonObject的String
+app.use(express.json());
 Hello(app)
 Lab5(app);
 

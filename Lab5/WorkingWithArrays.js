@@ -11,6 +11,11 @@ export default function WorkingWithArrays(app) {
     todos.push(newTodo);
     res.json(todos);
   });
+  app.post("/lab5/todos", (req, res) => {
+    const newTodo = {...req.body, id: new Date().getTime()};
+    todos.push(newTodo);
+    res.json(newTodo);
+  });
 
   app.get("/lab5/todos/:id", (req, res) => {
     const {id} = req.params;
@@ -29,12 +34,20 @@ export default function WorkingWithArrays(app) {
     res.json(todos);
   });
 
+
   app.get("/lab5/todos/:id/delete", (req, res) => {
     const {id} = req.params;
     const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
     todos.splice(todoIndex, 1);
     res.json(todos);
   });
+  app.delete("/lab5/todos/:id", (req, res) => {
+    const {id} = req.params;
+    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+    todos.splice(todoIndex, 1);
+    res.sendStatus(200);
+  });
+
 
   app.get("/lab5/todos/:id/title/:title", (req, res) => {
     const {id, title} = req.params;
@@ -42,6 +55,20 @@ export default function WorkingWithArrays(app) {
     todo.title = title;
     res.json(todos);
   });
+  // 通过put请求来进行修改某一个todo
+  app.put("/lab5/todos/:id", (req, res) => {
+    const {id} = req.params;
+    todos = todos.map((t) => {
+      if (t.id === parseInt(id)) {
+        // 复制老的属性的所有，然后用req.body覆盖所有包含了的属性
+        return {...t, ...req.body};
+      }
+      return t;
+    });
+    // 与其返回所有的todos，这里只返回一个执行后的状态：是否成功
+    res.sendStatus(200);
+  });
+
 
   // 根据id得到todo，并且修改他的complete属性
   app.get("/lab5/todos/:id/completed/:completed", (req, res) => {
@@ -65,5 +92,6 @@ export default function WorkingWithArrays(app) {
     res.json(todos);
 
   })
+
 
 };
