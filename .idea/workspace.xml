@@ -63,6 +63,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Kanbas" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Kanbas/Database" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -131,7 +134,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731634537587</updated>
-      <workItem from="1731634538707" duration="66604000" />
+      <workItem from="1731634538707" duration="72514000" />
     </task>
     <servers />
   </component>
