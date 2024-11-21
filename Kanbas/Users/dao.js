@@ -4,7 +4,7 @@
 import db from "../Database/index.js";
 // 从index.js导入db，并且赋值为users
 let { users } = db;
-export const createUser = (user) => (users = [...users, { ...user, _id: Date.now() }]);
+export const createUser = (user) => (users = [...users, { ...user, _id: Date.now().toString() }]);
 export const findAllUsers = () => users;
 export const findUserById = (userId) => users.find((user) => user._id === userId);
 export const findUserByUsername = (username) => users.find((user) => user.username === username);
