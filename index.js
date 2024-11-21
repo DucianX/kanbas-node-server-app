@@ -5,6 +5,7 @@ import cors from "cors";
 import session from "express-session";
 import UserRoutes from "./Kanbas/Users/routes.js";
 import CourseRoutes from "./Kanbas/Courses/routes.js";
+import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import "dotenv/config";
 
 const app = express()
@@ -43,9 +44,10 @@ app.use(
 // 将routes也添加进express里
 UserRoutes(app);
 CourseRoutes(app);
-
+// EnrollmentRoutes(app);
 Hello(app)
 Lab5(app);
+ModuleRoutes(app);
 
 app.listen(process.env.PORT || 4000)
 
