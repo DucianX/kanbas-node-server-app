@@ -1,0 +1,2191 @@
+Index: Kanbas/Assignments/routes.js
+===================================================================
+diff --git a/Kanbas/Assignments/routes.js b/Kanbas/Assignments/routes.js
+deleted file mode 100644
+--- a/Kanbas/Assignments/routes.js	
++++ /dev/null	
+@@ -1,39 +0,0 @@
+-import * as dao from "./dao.js";
+-import * as coursesDao from "../Courses/dao.js";
+-import {deleteAssignment} from "./dao.js";
+-export default function AssignmentRoutes(app) {
+-
+-  // 获得一个course的全部assignment
+-  app.get("/api/assignments/:courseId/assignments", (req, res) => {
+-    const {courseId} = req.params;
+-    const assignments = dao.findAssignmentsForCourse(courseId);
+-    res.json(assignments);
+-  });
+-
+-  // 创建一个新的assignment给当前的课程
+-  app.post("/api/assignments/:courseId/assignments", (req, res) => {
+-    const { courseId } = req.params;
+-    const assignment = {
+-      ...req.body,
+-      course: courseId,
+-    };
+-    const newAssignment = dao.createAssignment(assignment);
+-    res.send(newAssignment);
+-  });
+-
+-  // 删除一个assignment
+-  app.delete("/api/assignments/:assignmentId/assignments", async (req, res) => {
+-    const {assignmentId} = req.params;
+-    const status = await dao.deleteAssignment(assignmentId);
+-    res.send(status);
+-  });
+-
+-  // 编辑一个assignment,返回编辑成功与否
+-  app.put("/api/assignments/:assignmentId", async (req, res) => {
+-    const {assignmentId} = req.params;
+-    const assignmentUpdates = req.body;
+-    const status = await dao.updateAssignment(assignmentId, assignmentUpdates);
+-    res.send(status);
+-  });
+-}
+-
+Index: Lab5/index.js
+===================================================================
+diff --git a/Lab5/index.js b/Lab5/index.js
+deleted file mode 100644
+--- a/Lab5/index.js	
++++ /dev/null	
+@@ -1,14 +0,0 @@
+-import PathParameters from "./PathParameters.js";
+-import QueryParameters from "./QueryParameters.js";
+-import WorkingWithObjects from "./WorkingWithObjects.js";
+-import WorkingWithArrays from "./WorkingWithArrays.js";
+-
+-export default function Lab5(app) {
+-  app.get("/lab5/welcome", (req, res) => {
+-    res.send("Welcome to Lab 5");
+-  });
+-  PathParameters(app);
+-  QueryParameters(app);
+-  WorkingWithObjects(app);
+-  WorkingWithArrays(app);
+-};
+Index: Kanbas/Enrollments/routes.js
+===================================================================
+diff --git a/Kanbas/Enrollments/routes.js b/Kanbas/Enrollments/routes.js
+deleted file mode 100644
+--- a/Kanbas/Enrollments/routes.js	
++++ /dev/null	
+@@ -1,26 +0,0 @@
+-import * as dao from "./dao.js";
+-
+-export default function EnrollmentRoutes(app) {
+-  app.post("/api/courses/:courseId/createEnrollment", (req, res) => {
+-
+-    const {courseId} = req.params;
+-    const {userId} = req.body;
+-
+-    dao.enrollUserInCourse(userId, courseId);
+-    res.send("Enrollment created successfully");
+-  })
+-
+-  app.post("/api/courses/:courseId/deleteEnrollment", (req, res) => {
+-
+-    const {courseId} = req.params;
+-    const {userId} = req.body;
+-
+-    dao.deleteEnrollment(userId, courseId);
+-    res.send("Enrollment deleted successfully");
+-  })
+-
+-  app.get("/api/courses/getEnrollments", (req, res) => {
+-    const enrollments = dao.fetchAllEnrollment();
+-    res.json(enrollments);
+-  })
+-}
+Index: kanbas-node-server-app-cs5610-fa24.iml
+===================================================================
+diff --git a/kanbas-node-server-app-cs5610-fa24.iml b/kanbas-node-server-app-cs5610-fa24.iml
+deleted file mode 100644
+--- a/kanbas-node-server-app-cs5610-fa24.iml	
++++ /dev/null	
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<module version="4">
+-  <component name="AdditionalModuleElements">
+-    <content url="file://$MODULE_DIR$" dumb="true">
+-      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
+-    </content>
+-  </component>
+-</module>
+\ No newline at end of file
+Index: .gitignore
+===================================================================
+diff --git a/.gitignore b/.gitignore
+deleted file mode 100644
+--- a/.gitignore	
++++ /dev/null	
+@@ -1,2 +0,0 @@
+-node_modules
+-.env.local
+Index: .idea/modules.xml
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+deleted file mode 100644
+--- a/.idea/modules.xml	
++++ /dev/null	
+@@ -1,8 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="ProjectModuleManager">
+-    <modules>
+-      <module fileurl="file://$PROJECT_DIR$/kanbas-node-server-app-cs5610-fa24.iml" filepath="$PROJECT_DIR$/kanbas-node-server-app-cs5610-fa24.iml" />
+-    </modules>
+-  </component>
+-</project>
+\ No newline at end of file
+Index: Hello.js
+===================================================================
+diff --git a/Hello.js b/Hello.js
+deleted file mode 100644
+--- a/Hello.js	
++++ /dev/null	
+@@ -1,9 +0,0 @@
+-export default function Hello(app) {
+-
+-  app.get('/hello', (req, res) => {
+-    res.send('XXXLife is good!')
+-  })
+-  app.get('/', (req, res) => {
+-    res.send('Welcome to Full Stack Development!')
+-  })
+-}
+Index: Kanbas/Assignments/dao.js
+===================================================================
+diff --git a/Kanbas/Assignments/dao.js b/Kanbas/Assignments/dao.js
+deleted file mode 100644
+--- a/Kanbas/Assignments/dao.js	
++++ /dev/null	
+@@ -1,27 +0,0 @@
+-import Database from "../Database/index.js";
+-export function findAssignmentsForCourse(courseId) {
+-  const { assignments } = Database;
+-  return assignments.filter((assignment) => assignment.course === courseId);
+-}
+-
+-export function createAssignment(assignment) {
+-  const newAssignment = { ...assignment, _id: Date.now().toString() };
+-  Database.assignments = [...Database.assignments, assignment];
+-  return newAssignment;
+-}
+-
+-// 定义：传入一个id，删除id在database里对应的assignment，返回状态
+-export function deleteAssignment(assignmentId) {
+-  const { assignments } = Database;
+-  Database.assignments = assignments.filter(
+-    (assignment) => assignment._id !== assignmentId
+-  );
+-}
+-
+-// 定义：根据传入的id和修改过的assignment修改数据库里的assignment,并且返回修改过的assignment
+-export function updateAssignment(assignmentId, assignmentUpdates) {
+-  const { assignments } = Database;
+-  const assignment = assignments.find((assignment) => assignment._id === assignmentId);
+-  Object.assign(assignment, assignmentUpdates);
+-  return assignment;
+-}
+Index: Kanbas/Database/index.js
+===================================================================
+diff --git a/Kanbas/Database/index.js b/Kanbas/Database/index.js
+deleted file mode 100644
+--- a/Kanbas/Database/index.js	
++++ /dev/null	
+@@ -1,6 +0,0 @@
+-import courses from "./courses.js";
+-import modules from "./modules.js";
+-import assignments from "./assignments.js";
+-import users from './users.js';
+-import enrollments from './enrollments.js';
+-export default {  courses, modules,assignments, users, enrollments };
+Index: Kanbas/Database/assignments.js
+===================================================================
+diff --git a/Kanbas/Database/assignments.js b/Kanbas/Database/assignments.js
+deleted file mode 100644
+--- a/Kanbas/Database/assignments.js	
++++ /dev/null	
+@@ -1,42 +0,0 @@
+-export default [
+-  {
+-    "_id": "A101",
+-    "title": "Propulsion Assignment",
+-    "course": "RS101",
+-    "description": "Analyze the propulsion systems and submit a detailed report.",
+-    "points": 100,
+-    "dueDate": "2024-09-01",
+-    "availableDate": "2024-05-15",
+-    "availableUntilDate": "2024-05-16"
+-  },
+-  {
+-    "_id": "A102",
+-    "title": "Combustion Analysis",
+-    "course": "RS101",
+-    "description": "Perform a combustion analysis and present the results.",
+-    "points": 150,
+-    "dueDate": "2024-05-25",
+-    "availableDate": "2024-05-10",
+-    "availableUntilDate": "2024-05-16"
+-  },
+-  {
+-    "_id": "A103",
+-    "title": "Nozzle Design Project",
+-    "course": "RS101",
+-    "description": "Design a nozzle for optimal performance in varying conditions.",
+-    "points": 200,
+-    "dueDate": "2024-05-30",
+-    "availableDate": "2024-05-15",
+-    "availableUntilDate": "2024-05-16"
+-  },
+-  {
+-    "_id": "A201",
+-    "title": "Aerodynamics Quiz Jinxed",
+-    "course": "RS102",
+-    "description": "Take the aerodynamics quiz covering fundamental principles.",
+-    "points": 50,
+-    "dueDate": "2024-06-01",
+-    "availableDate": "2024-05-20",
+-    "availableUntilDate": "2024-06-16"
+-  }
+-]
+Index: Kanbas/Database/courses.js
+===================================================================
+diff --git a/Kanbas/Database/courses.js b/Kanbas/Database/courses.js
+deleted file mode 100644
+--- a/Kanbas/Database/courses.js	
++++ /dev/null	
+@@ -1,32 +0,0 @@
+-export default [
+-  {
+-    "_id": "RS101",
+-    "name": "Rocket Propulsion",
+-    "number": "RS4550",
+-    "startDate": "2023-01-10",
+-    "endDate": "2023-05-15",
+-    "department": "D123",
+-    "credits": 4,
+-    "description": "This course provides an in-depth study of the fundamentals of rocket propulsion, covering topics such as propulsion theory, engine types, fuel chemistry, and the practical applications of rocket technology. Designed for students with a strong background in physics and engineering, the course includes both theoretical instruction and hands-on laboratory work"
+-  },
+-  {
+-    "_id": "RS102",
+-    "name": "Aerodynamics",
+-    "number": "RS4560",
+-    "startDate": "2023-01-10",
+-    "endDate": "2023-05-15",
+-    "department": "D123",
+-    "credits": 3,
+-    "description": "This course offers a comprehensive exploration of aerodynamics, focusing on the principles and applications of airflow and its effects on flying objects. Topics include fluid dynamics, airfoil design, lift and drag forces, and the aerodynamic considerations in aircraft design. The course blends theoretical learning with practical applications, suitable for students pursuing a career in aeronautics or astronautics engineering."
+-  },
+-  {
+-    "_id": "RS103",
+-    "name": "Spacecraft Design",
+-    "number": "RS4570",
+-    "startDate": "2023-01-10",
+-    "endDate": "2023-05-15",
+-    "department": "D123",
+-    "credits": 4,
+-    "description": "This course delves into the principles and practices of spacecraft design, offering students a detailed understanding of the engineering and technology behind spacecraft systems. Key topics include spacecraft structure, propulsion, power systems, thermal control, and payload integration. Emphasizing both theoretical concepts and practical skills, the course prepares students for careers in the space industry, with a focus on innovative design and problem-solving in the context of current and future space missions"
+-  }
+-]
+Index: Kanbas/Courses/dao.js
+===================================================================
+diff --git a/Kanbas/Courses/dao.js b/Kanbas/Courses/dao.js
+deleted file mode 100644
+--- a/Kanbas/Courses/dao.js	
++++ /dev/null	
+@@ -1,33 +0,0 @@
+-// 用这个data access project来获得database里面所有的courses
+-// DAO的理解：类似于java的get等方法，暴露了API，充当数据库和客户端之间的桥梁
+-// 如果数据库更改，客户端的业务逻辑不需要更改，只需要更改DAO的implementation
+-// 提供了一种【集中】管理所有数据访问逻辑的方式
+-import Database from "../Database/index.js";
+-export function findAllCourses() {
+-  return Database.courses;
+-}
+-export function findCoursesForEnrolledUser(userId) {
+-  const { courses, enrollments } = Database;
+-  const enrolledCourses = courses.filter((course) => // 遍历所有课程，返回的是符合条件的课程
+-    // some方法：检查数组中的至少一个元素是否满足指定条件，如果是，返回True
+-    // 这里和course的属性做了结合，找到符合userID并且符合courseID的enrollment，就返回True
+-    enrollments.some((enrollment) => enrollment.user === userId && enrollment.course === course._id));
+-  return enrolledCourses;
+-}
+-export function createCourse(course) {
+-  const newCourse = { ...course, _id: Date.now().toString() };
+-  Database.courses = [...Database.courses, newCourse];
+-  return newCourse;
+-}
+-export function deleteCourse(courseId) {
+-  const { courses, enrollments } = Database;
+-  Database.courses = courses.filter((course) => course._id !== courseId);
+-  Database.enrollments = enrollments.filter(
+-    (enrollment) => enrollment.course !== courseId
+-  );}
+-export function updateCourse(courseId, courseUpdates) {
+-  const { courses } = Database;
+-  const course = courses.find((course) => course._id === courseId);
+-  Object.assign(course, courseUpdates);
+-  return course;
+-}
+Index: package.json
+===================================================================
+diff --git a/package.json b/package.json
+deleted file mode 100644
+--- a/package.json	
++++ /dev/null	
+@@ -1,20 +0,0 @@
+-{
+-  "type": "module",
+-  "name": "kanbas-node-server-app",
+-  "version": "1.0.0",
+-  "main": "index.js",
+-  "scripts": {
+-    "test": "echo \"Error: no test specified\" && exit 1",
+-    "start": "node index.js"
+-  },
+-  "author": "",
+-  "license": "ISC",
+-  "description": "",
+-  "dependencies": {
+-    "axios": "^1.7.7",
+-    "cors": "^2.8.5",
+-    "dotenv": "^16.4.5",
+-    "express": "^4.21.1",
+-    "express-session": "^1.18.1"
+-  }
+-}
+Index: index.js
+===================================================================
+diff --git a/index.js b/index.js
+deleted file mode 100644
+--- a/index.js	
++++ /dev/null	
+@@ -1,55 +0,0 @@
+-import express from 'express';
+-import Hello from "./Hello.js"
+-import Lab5 from "./Lab5/index.js";
+-import cors from "cors";
+-import session from "express-session";
+-import UserRoutes from "./Kanbas/Users/routes.js";
+-import CourseRoutes from "./Kanbas/Courses/routes.js";
+-import ModuleRoutes from "./Kanbas/Modules/routes.js";
+-import AssignmentRoutes from "./Kanbas/Assignments/routes.js";
+-import "dotenv/config";
+-import EnrollmentRoutes from "./Kanbas/Enrollments/routes.js";
+-
+-const app = express()
+-// 验证请求里是否存在一个可以被解析为JsonObject的String
+-app.use(express.json());
+-// 所有的请求都会经过这里，cors里面配置了很多细节的东西。
+-// 使用cors，改为仅支持3000（react方面）的请求
+-app.use(cors({
+-    credentials: true,
+-    // 本地的时候：让端口在3000的运行；云端的时候：让netlify的运行
+-    origin: process.env.NETLIFY_URL || "http://localhost:3000",
+-  }
+-));
+-// 以下代码是session的设置，可以让express在session中存储一些数据
+-const sessionOptions = {
+-  secret: process.env.SESSION_SECRET || "kanbas",
+-  resave: false,
+-  saveUninitialized: false,
+-};
+-if (process.env.NODE_ENV !== "development") {
+-  sessionOptions.proxy = true;
+-  sessionOptions.cookie = {
+-    sameSite: "none",
+-    secure: true,
+-    domain: process.env.NODE_SERVER_DOMAIN,
+-  };
+-}
+-
+-// session利用cookie作为key，分辨来自不同浏览器的请求，创建不同的session实例给他们
+-// app.use(session(...检查每一个传入的request，他们是否有cookie。若有，检查针对该cookie是否已经实例化了对象
+-// 如果还没有，就创建一个并且添加到request当中
+-app.use(
+-  session(sessionOptions)
+-);
+-
+-// 将routes也添加进express里
+-UserRoutes(app);
+-CourseRoutes(app);
+-EnrollmentRoutes(app);
+-Hello(app)
+-Lab5(app);
+-ModuleRoutes(app);
+-AssignmentRoutes(app);
+-app.listen(process.env.PORT || 4000)
+-
+Index: Lab5/QueryParameters.js
+===================================================================
+diff --git a/Lab5/QueryParameters.js b/Lab5/QueryParameters.js
+deleted file mode 100644
+--- a/Lab5/QueryParameters.js	
++++ /dev/null	
+@@ -1,24 +0,0 @@
+-export default function QueryParameters(app) {
+-  app.get("/lab5/calculator", (req, res) => {
+-    const { a, b, operation } = req.query;
+-    let result = 0;
+-    switch (operation) {
+-      case "add":
+-        result = parseInt(a) + parseInt(b);
+-        break;
+-      case "subtract":
+-        result = parseInt(a) - parseInt(b);
+-        break;
+-      case "multiply":
+-        result = parseInt(a) * parseInt(b);
+-        break;
+-      case "divide":
+-        result = parseInt(a) / parseInt(b);
+-        break;
+-
+-      default:
+-        result = "Invalid operation";
+-    }
+-    res.send(result.toString());
+-  });
+-}
+Index: package-lock.json
+===================================================================
+diff --git a/package-lock.json b/package-lock.json
+deleted file mode 100644
+--- a/package-lock.json	
++++ /dev/null	
+@@ -1,953 +0,0 @@
+-{
+-  "name": "kanbas-node-server-app",
+-  "version": "1.0.0",
+-  "lockfileVersion": 3,
+-  "requires": true,
+-  "packages": {
+-    "": {
+-      "name": "kanbas-node-server-app",
+-      "version": "1.0.0",
+-      "license": "ISC",
+-      "dependencies": {
+-        "axios": "^1.7.7",
+-        "cors": "^2.8.5",
+-        "dotenv": "^16.4.5",
+-        "express": "^4.21.1",
+-        "express-session": "^1.18.1"
+-      }
+-    },
+-    "node_modules/accepts": {
+-      "version": "1.3.8",
+-      "resolved": "https://registry.npmjs.org/accepts/-/accepts-1.3.8.tgz",
+-      "integrity": "sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "mime-types": "~2.1.34",
+-        "negotiator": "0.6.3"
+-      },
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/array-flatten": {
+-      "version": "1.1.1",
+-      "resolved": "https://registry.npmjs.org/array-flatten/-/array-flatten-1.1.1.tgz",
+-      "integrity": "sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==",
+-      "license": "MIT"
+-    },
+-    "node_modules/asynckit": {
+-      "version": "0.4.0",
+-      "resolved": "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz",
+-      "integrity": "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==",
+-      "license": "MIT"
+-    },
+-    "node_modules/axios": {
+-      "version": "1.7.7",
+-      "resolved": "https://registry.npmjs.org/axios/-/axios-1.7.7.tgz",
+-      "integrity": "sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "follow-redirects": "^1.15.6",
+-        "form-data": "^4.0.0",
+-        "proxy-from-env": "^1.1.0"
+-      }
+-    },
+-    "node_modules/body-parser": {
+-      "version": "1.20.3",
+-      "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.3.tgz",
+-      "integrity": "sha512-7rAxByjUMqQ3/bHJy7D6OGXvx/MMc4IqBn/X0fcM1QUcAItpZrBEYhWGem+tzXH90c+G01ypMcYJBO9Y30203g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "bytes": "3.1.2",
+-        "content-type": "~1.0.5",
+-        "debug": "2.6.9",
+-        "depd": "2.0.0",
+-        "destroy": "1.2.0",
+-        "http-errors": "2.0.0",
+-        "iconv-lite": "0.4.24",
+-        "on-finished": "2.4.1",
+-        "qs": "6.13.0",
+-        "raw-body": "2.5.2",
+-        "type-is": "~1.6.18",
+-        "unpipe": "1.0.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.8",
+-        "npm": "1.2.8000 || >= 1.4.16"
+-      }
+-    },
+-    "node_modules/bytes": {
+-      "version": "3.1.2",
+-      "resolved": "https://registry.npmjs.org/bytes/-/bytes-3.1.2.tgz",
+-      "integrity": "sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/call-bind": {
+-      "version": "1.0.7",
+-      "resolved": "https://registry.npmjs.org/call-bind/-/call-bind-1.0.7.tgz",
+-      "integrity": "sha512-GHTSNSYICQ7scH7sZ+M2rFopRoLh8t2bLSW6BbgrtLsahOIB5iyAVJf9GjWK3cYTDaMj4XdBpM1cA6pIS0Kv2w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "es-define-property": "^1.0.0",
+-        "es-errors": "^1.3.0",
+-        "function-bind": "^1.1.2",
+-        "get-intrinsic": "^1.2.4",
+-        "set-function-length": "^1.2.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/combined-stream": {
+-      "version": "1.0.8",
+-      "resolved": "https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz",
+-      "integrity": "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "delayed-stream": "~1.0.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/content-disposition": {
+-      "version": "0.5.4",
+-      "resolved": "https://registry.npmjs.org/content-disposition/-/content-disposition-0.5.4.tgz",
+-      "integrity": "sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "safe-buffer": "5.2.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/content-type": {
+-      "version": "1.0.5",
+-      "resolved": "https://registry.npmjs.org/content-type/-/content-type-1.0.5.tgz",
+-      "integrity": "sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/cookie": {
+-      "version": "0.7.1",
+-      "resolved": "https://registry.npmjs.org/cookie/-/cookie-0.7.1.tgz",
+-      "integrity": "sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/cookie-signature": {
+-      "version": "1.0.6",
+-      "resolved": "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.6.tgz",
+-      "integrity": "sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==",
+-      "license": "MIT"
+-    },
+-    "node_modules/cors": {
+-      "version": "2.8.5",
+-      "resolved": "https://registry.npmjs.org/cors/-/cors-2.8.5.tgz",
+-      "integrity": "sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "object-assign": "^4",
+-        "vary": "^1"
+-      },
+-      "engines": {
+-        "node": ">= 0.10"
+-      }
+-    },
+-    "node_modules/debug": {
+-      "version": "2.6.9",
+-      "resolved": "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz",
+-      "integrity": "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ms": "2.0.0"
+-      }
+-    },
+-    "node_modules/define-data-property": {
+-      "version": "1.1.4",
+-      "resolved": "https://registry.npmjs.org/define-data-property/-/define-data-property-1.1.4.tgz",
+-      "integrity": "sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "es-define-property": "^1.0.0",
+-        "es-errors": "^1.3.0",
+-        "gopd": "^1.0.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/delayed-stream": {
+-      "version": "1.0.0",
+-      "resolved": "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz",
+-      "integrity": "sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=0.4.0"
+-      }
+-    },
+-    "node_modules/depd": {
+-      "version": "2.0.0",
+-      "resolved": "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz",
+-      "integrity": "sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/destroy": {
+-      "version": "1.2.0",
+-      "resolved": "https://registry.npmjs.org/destroy/-/destroy-1.2.0.tgz",
+-      "integrity": "sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8",
+-        "npm": "1.2.8000 || >= 1.4.16"
+-      }
+-    },
+-    "node_modules/dotenv": {
+-      "version": "16.4.5",
+-      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-16.4.5.tgz",
+-      "integrity": "sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==",
+-      "license": "BSD-2-Clause",
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://dotenvx.com"
+-      }
+-    },
+-    "node_modules/ee-first": {
+-      "version": "1.1.1",
+-      "resolved": "https://registry.npmjs.org/ee-first/-/ee-first-1.1.1.tgz",
+-      "integrity": "sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==",
+-      "license": "MIT"
+-    },
+-    "node_modules/encodeurl": {
+-      "version": "2.0.0",
+-      "resolved": "https://registry.npmjs.org/encodeurl/-/encodeurl-2.0.0.tgz",
+-      "integrity": "sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/es-define-property": {
+-      "version": "1.0.0",
+-      "resolved": "https://registry.npmjs.org/es-define-property/-/es-define-property-1.0.0.tgz",
+-      "integrity": "sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "get-intrinsic": "^1.2.4"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      }
+-    },
+-    "node_modules/es-errors": {
+-      "version": "1.3.0",
+-      "resolved": "https://registry.npmjs.org/es-errors/-/es-errors-1.3.0.tgz",
+-      "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.4"
+-      }
+-    },
+-    "node_modules/escape-html": {
+-      "version": "1.0.3",
+-      "resolved": "https://registry.npmjs.org/escape-html/-/escape-html-1.0.3.tgz",
+-      "integrity": "sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==",
+-      "license": "MIT"
+-    },
+-    "node_modules/etag": {
+-      "version": "1.8.1",
+-      "resolved": "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz",
+-      "integrity": "sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/express": {
+-      "version": "4.21.1",
+-      "resolved": "https://registry.npmjs.org/express/-/express-4.21.1.tgz",
+-      "integrity": "sha512-YSFlK1Ee0/GC8QaO91tHcDxJiE/X4FbpAyQWkxAvG6AXCuR65YzK8ua6D9hvi/TzUfZMpc+BwuM1IPw8fmQBiQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "accepts": "~1.3.8",
+-        "array-flatten": "1.1.1",
+-        "body-parser": "1.20.3",
+-        "content-disposition": "0.5.4",
+-        "content-type": "~1.0.4",
+-        "cookie": "0.7.1",
+-        "cookie-signature": "1.0.6",
+-        "debug": "2.6.9",
+-        "depd": "2.0.0",
+-        "encodeurl": "~2.0.0",
+-        "escape-html": "~1.0.3",
+-        "etag": "~1.8.1",
+-        "finalhandler": "1.3.1",
+-        "fresh": "0.5.2",
+-        "http-errors": "2.0.0",
+-        "merge-descriptors": "1.0.3",
+-        "methods": "~1.1.2",
+-        "on-finished": "2.4.1",
+-        "parseurl": "~1.3.3",
+-        "path-to-regexp": "0.1.10",
+-        "proxy-addr": "~2.0.7",
+-        "qs": "6.13.0",
+-        "range-parser": "~1.2.1",
+-        "safe-buffer": "5.2.1",
+-        "send": "0.19.0",
+-        "serve-static": "1.16.2",
+-        "setprototypeof": "1.2.0",
+-        "statuses": "2.0.1",
+-        "type-is": "~1.6.18",
+-        "utils-merge": "1.0.1",
+-        "vary": "~1.1.2"
+-      },
+-      "engines": {
+-        "node": ">= 0.10.0"
+-      }
+-    },
+-    "node_modules/express-session": {
+-      "version": "1.18.1",
+-      "resolved": "https://registry.npmjs.org/express-session/-/express-session-1.18.1.tgz",
+-      "integrity": "sha512-a5mtTqEaZvBCL9A9aqkrtfz+3SMDhOVUnjafjo+s7A9Txkq+SVX2DLvSp1Zrv4uCXa3lMSK3viWnh9Gg07PBUA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "cookie": "0.7.2",
+-        "cookie-signature": "1.0.7",
+-        "debug": "2.6.9",
+-        "depd": "~2.0.0",
+-        "on-headers": "~1.0.2",
+-        "parseurl": "~1.3.3",
+-        "safe-buffer": "5.2.1",
+-        "uid-safe": "~2.1.5"
+-      },
+-      "engines": {
+-        "node": ">= 0.8.0"
+-      }
+-    },
+-    "node_modules/express-session/node_modules/cookie": {
+-      "version": "0.7.2",
+-      "resolved": "https://registry.npmjs.org/cookie/-/cookie-0.7.2.tgz",
+-      "integrity": "sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/express-session/node_modules/cookie-signature": {
+-      "version": "1.0.7",
+-      "resolved": "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.7.tgz",
+-      "integrity": "sha512-NXdYc3dLr47pBkpUCHtKSwIOQXLVn8dZEuywboCOJY/osA0wFSLlSawr3KN8qXJEyX66FcONTH8EIlVuK0yyFA==",
+-      "license": "MIT"
+-    },
+-    "node_modules/finalhandler": {
+-      "version": "1.3.1",
+-      "resolved": "https://registry.npmjs.org/finalhandler/-/finalhandler-1.3.1.tgz",
+-      "integrity": "sha512-6BN9trH7bp3qvnrRyzsBz+g3lZxTNZTbVO2EV1CS0WIcDbawYVdYvGflME/9QP0h0pYlCDBCTjYa9nZzMDpyxQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "debug": "2.6.9",
+-        "encodeurl": "~2.0.0",
+-        "escape-html": "~1.0.3",
+-        "on-finished": "2.4.1",
+-        "parseurl": "~1.3.3",
+-        "statuses": "2.0.1",
+-        "unpipe": "~1.0.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/follow-redirects": {
+-      "version": "1.15.9",
+-      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.9.tgz",
+-      "integrity": "sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==",
+-      "funding": [
+-        {
+-          "type": "individual",
+-          "url": "https://github.com/sponsors/RubenVerborgh"
+-        }
+-      ],
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=4.0"
+-      },
+-      "peerDependenciesMeta": {
+-        "debug": {
+-          "optional": true
+-        }
+-      }
+-    },
+-    "node_modules/form-data": {
+-      "version": "4.0.1",
+-      "resolved": "https://registry.npmjs.org/form-data/-/form-data-4.0.1.tgz",
+-      "integrity": "sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "asynckit": "^0.4.0",
+-        "combined-stream": "^1.0.8",
+-        "mime-types": "^2.1.12"
+-      },
+-      "engines": {
+-        "node": ">= 6"
+-      }
+-    },
+-    "node_modules/forwarded": {
+-      "version": "0.2.0",
+-      "resolved": "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz",
+-      "integrity": "sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/fresh": {
+-      "version": "0.5.2",
+-      "resolved": "https://registry.npmjs.org/fresh/-/fresh-0.5.2.tgz",
+-      "integrity": "sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/function-bind": {
+-      "version": "1.1.2",
+-      "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.2.tgz",
+-      "integrity": "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==",
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/get-intrinsic": {
+-      "version": "1.2.4",
+-      "resolved": "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.2.4.tgz",
+-      "integrity": "sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "es-errors": "^1.3.0",
+-        "function-bind": "^1.1.2",
+-        "has-proto": "^1.0.1",
+-        "has-symbols": "^1.0.3",
+-        "hasown": "^2.0.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/gopd": {
+-      "version": "1.0.1",
+-      "resolved": "https://registry.npmjs.org/gopd/-/gopd-1.0.1.tgz",
+-      "integrity": "sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "get-intrinsic": "^1.1.3"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/has-property-descriptors": {
+-      "version": "1.0.2",
+-      "resolved": "https://registry.npmjs.org/has-property-descriptors/-/has-property-descriptors-1.0.2.tgz",
+-      "integrity": "sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "es-define-property": "^1.0.0"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/has-proto": {
+-      "version": "1.0.3",
+-      "resolved": "https://registry.npmjs.org/has-proto/-/has-proto-1.0.3.tgz",
+-      "integrity": "sha512-SJ1amZAJUiZS+PhsVLf5tGydlaVB8EdFpaSO4gmiUKUOxk8qzn5AIy4ZeJUmh22znIdk/uMAUT2pl3FxzVUH+Q==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/has-symbols": {
+-      "version": "1.0.3",
+-      "resolved": "https://registry.npmjs.org/has-symbols/-/has-symbols-1.0.3.tgz",
+-      "integrity": "sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/hasown": {
+-      "version": "2.0.2",
+-      "resolved": "https://registry.npmjs.org/hasown/-/hasown-2.0.2.tgz",
+-      "integrity": "sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "function-bind": "^1.1.2"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      }
+-    },
+-    "node_modules/http-errors": {
+-      "version": "2.0.0",
+-      "resolved": "https://registry.npmjs.org/http-errors/-/http-errors-2.0.0.tgz",
+-      "integrity": "sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "depd": "2.0.0",
+-        "inherits": "2.0.4",
+-        "setprototypeof": "1.2.0",
+-        "statuses": "2.0.1",
+-        "toidentifier": "1.0.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/iconv-lite": {
+-      "version": "0.4.24",
+-      "resolved": "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz",
+-      "integrity": "sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "safer-buffer": ">= 2.1.2 < 3"
+-      },
+-      "engines": {
+-        "node": ">=0.10.0"
+-      }
+-    },
+-    "node_modules/inherits": {
+-      "version": "2.0.4",
+-      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz",
+-      "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==",
+-      "license": "ISC"
+-    },
+-    "node_modules/ipaddr.js": {
+-      "version": "1.9.1",
+-      "resolved": "https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-1.9.1.tgz",
+-      "integrity": "sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.10"
+-      }
+-    },
+-    "node_modules/media-typer": {
+-      "version": "0.3.0",
+-      "resolved": "https://registry.npmjs.org/media-typer/-/media-typer-0.3.0.tgz",
+-      "integrity": "sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/merge-descriptors": {
+-      "version": "1.0.3",
+-      "resolved": "https://registry.npmjs.org/merge-descriptors/-/merge-descriptors-1.0.3.tgz",
+-      "integrity": "sha512-gaNvAS7TZ897/rVaZ0nMtAyxNyi/pdbjbAwUpFQpN70GqnVfOiXpeUUMKRBmzXaSQ8DdTX4/0ms62r2K+hE6mQ==",
+-      "license": "MIT",
+-      "funding": {
+-        "url": "https://github.com/sponsors/sindresorhus"
+-      }
+-    },
+-    "node_modules/methods": {
+-      "version": "1.1.2",
+-      "resolved": "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz",
+-      "integrity": "sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/mime": {
+-      "version": "1.6.0",
+-      "resolved": "https://registry.npmjs.org/mime/-/mime-1.6.0.tgz",
+-      "integrity": "sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==",
+-      "license": "MIT",
+-      "bin": {
+-        "mime": "cli.js"
+-      },
+-      "engines": {
+-        "node": ">=4"
+-      }
+-    },
+-    "node_modules/mime-db": {
+-      "version": "1.52.0",
+-      "resolved": "https://registry.npmjs.org/mime-db/-/mime-db-1.52.0.tgz",
+-      "integrity": "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/mime-types": {
+-      "version": "2.1.35",
+-      "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.35.tgz",
+-      "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "mime-db": "1.52.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/ms": {
+-      "version": "2.0.0",
+-      "resolved": "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz",
+-      "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==",
+-      "license": "MIT"
+-    },
+-    "node_modules/negotiator": {
+-      "version": "0.6.3",
+-      "resolved": "https://registry.npmjs.org/negotiator/-/negotiator-0.6.3.tgz",
+-      "integrity": "sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/object-assign": {
+-      "version": "4.1.1",
+-      "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz",
+-      "integrity": "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=0.10.0"
+-      }
+-    },
+-    "node_modules/object-inspect": {
+-      "version": "1.13.3",
+-      "resolved": "https://registry.npmjs.org/object-inspect/-/object-inspect-1.13.3.tgz",
+-      "integrity": "sha512-kDCGIbxkDSXE3euJZZXzc6to7fCrKHNI/hSRQnRuQ+BWjFNzZwiFF8fj/6o2t2G9/jTj8PSIYTfCLelLZEeRpA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/on-finished": {
+-      "version": "2.4.1",
+-      "resolved": "https://registry.npmjs.org/on-finished/-/on-finished-2.4.1.tgz",
+-      "integrity": "sha512-oVlzkg3ENAhCk2zdv7IJwd/QUD4z2RxRwpkcGY8psCVcCYZNq4wYnVWALHM+brtuJjePWiYF/ClmuDr8Ch5+kg==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ee-first": "1.1.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/on-headers": {
+-      "version": "1.0.2",
+-      "resolved": "https://registry.npmjs.org/on-headers/-/on-headers-1.0.2.tgz",
+-      "integrity": "sha512-pZAE+FJLoyITytdqK0U5s+FIpjN0JP3OzFi/u8Rx+EV5/W+JTWGXG8xFzevE7AjBfDqHv/8vL8qQsIhHnqRkrA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/parseurl": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/parseurl/-/parseurl-1.3.3.tgz",
+-      "integrity": "sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/path-to-regexp": {
+-      "version": "0.1.10",
+-      "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.10.tgz",
+-      "integrity": "sha512-7lf7qcQidTku0Gu3YDPc8DJ1q7OOucfa/BSsIwjuh56VU7katFvuM8hULfkwB3Fns/rsVF7PwPKVw1sl5KQS9w==",
+-      "license": "MIT"
+-    },
+-    "node_modules/proxy-addr": {
+-      "version": "2.0.7",
+-      "resolved": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.7.tgz",
+-      "integrity": "sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "forwarded": "0.2.0",
+-        "ipaddr.js": "1.9.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.10"
+-      }
+-    },
+-    "node_modules/proxy-from-env": {
+-      "version": "1.1.0",
+-      "resolved": "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz",
+-      "integrity": "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==",
+-      "license": "MIT"
+-    },
+-    "node_modules/qs": {
+-      "version": "6.13.0",
+-      "resolved": "https://registry.npmjs.org/qs/-/qs-6.13.0.tgz",
+-      "integrity": "sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==",
+-      "license": "BSD-3-Clause",
+-      "dependencies": {
+-        "side-channel": "^1.0.6"
+-      },
+-      "engines": {
+-        "node": ">=0.6"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/random-bytes": {
+-      "version": "1.0.0",
+-      "resolved": "https://registry.npmjs.org/random-bytes/-/random-bytes-1.0.0.tgz",
+-      "integrity": "sha512-iv7LhNVO047HzYR3InF6pUcUsPQiHTM1Qal51DcGSuZFBil1aBBWG5eHPNek7bvILMaYJ/8RU1e8w1AMdHmLQQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/range-parser": {
+-      "version": "1.2.1",
+-      "resolved": "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz",
+-      "integrity": "sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/raw-body": {
+-      "version": "2.5.2",
+-      "resolved": "https://registry.npmjs.org/raw-body/-/raw-body-2.5.2.tgz",
+-      "integrity": "sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "bytes": "3.1.2",
+-        "http-errors": "2.0.0",
+-        "iconv-lite": "0.4.24",
+-        "unpipe": "1.0.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/safe-buffer": {
+-      "version": "5.2.1",
+-      "resolved": "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz",
+-      "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==",
+-      "funding": [
+-        {
+-          "type": "github",
+-          "url": "https://github.com/sponsors/feross"
+-        },
+-        {
+-          "type": "patreon",
+-          "url": "https://www.patreon.com/feross"
+-        },
+-        {
+-          "type": "consulting",
+-          "url": "https://feross.org/support"
+-        }
+-      ],
+-      "license": "MIT"
+-    },
+-    "node_modules/safer-buffer": {
+-      "version": "2.1.2",
+-      "resolved": "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz",
+-      "integrity": "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==",
+-      "license": "MIT"
+-    },
+-    "node_modules/send": {
+-      "version": "0.19.0",
+-      "resolved": "https://registry.npmjs.org/send/-/send-0.19.0.tgz",
+-      "integrity": "sha512-dW41u5VfLXu8SJh5bwRmyYUbAoSB3c9uQh6L8h/KtsFREPWpbX1lrljJo186Jc4nmci/sGUZ9a0a0J2zgfq2hw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "debug": "2.6.9",
+-        "depd": "2.0.0",
+-        "destroy": "1.2.0",
+-        "encodeurl": "~1.0.2",
+-        "escape-html": "~1.0.3",
+-        "etag": "~1.8.1",
+-        "fresh": "0.5.2",
+-        "http-errors": "2.0.0",
+-        "mime": "1.6.0",
+-        "ms": "2.1.3",
+-        "on-finished": "2.4.1",
+-        "range-parser": "~1.2.1",
+-        "statuses": "2.0.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.8.0"
+-      }
+-    },
+-    "node_modules/send/node_modules/encodeurl": {
+-      "version": "1.0.2",
+-      "resolved": "https://registry.npmjs.org/encodeurl/-/encodeurl-1.0.2.tgz",
+-      "integrity": "sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/send/node_modules/ms": {
+-      "version": "2.1.3",
+-      "resolved": "https://registry.npmjs.org/ms/-/ms-2.1.3.tgz",
+-      "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==",
+-      "license": "MIT"
+-    },
+-    "node_modules/serve-static": {
+-      "version": "1.16.2",
+-      "resolved": "https://registry.npmjs.org/serve-static/-/serve-static-1.16.2.tgz",
+-      "integrity": "sha512-VqpjJZKadQB/PEbEwvFdO43Ax5dFBZ2UECszz8bQ7pi7wt//PWe1P6MN7eCnjsatYtBT6EuiClbjSWP2WrIoTw==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "encodeurl": "~2.0.0",
+-        "escape-html": "~1.0.3",
+-        "parseurl": "~1.3.3",
+-        "send": "0.19.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.8.0"
+-      }
+-    },
+-    "node_modules/set-function-length": {
+-      "version": "1.2.2",
+-      "resolved": "https://registry.npmjs.org/set-function-length/-/set-function-length-1.2.2.tgz",
+-      "integrity": "sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "define-data-property": "^1.1.4",
+-        "es-errors": "^1.3.0",
+-        "function-bind": "^1.1.2",
+-        "get-intrinsic": "^1.2.4",
+-        "gopd": "^1.0.1",
+-        "has-property-descriptors": "^1.0.2"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      }
+-    },
+-    "node_modules/setprototypeof": {
+-      "version": "1.2.0",
+-      "resolved": "https://registry.npmjs.org/setprototypeof/-/setprototypeof-1.2.0.tgz",
+-      "integrity": "sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==",
+-      "license": "ISC"
+-    },
+-    "node_modules/side-channel": {
+-      "version": "1.0.6",
+-      "resolved": "https://registry.npmjs.org/side-channel/-/side-channel-1.0.6.tgz",
+-      "integrity": "sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "call-bind": "^1.0.7",
+-        "es-errors": "^1.3.0",
+-        "get-intrinsic": "^1.2.4",
+-        "object-inspect": "^1.13.1"
+-      },
+-      "engines": {
+-        "node": ">= 0.4"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+-    "node_modules/statuses": {
+-      "version": "2.0.1",
+-      "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.1.tgz",
+-      "integrity": "sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/toidentifier": {
+-      "version": "1.0.1",
+-      "resolved": "https://registry.npmjs.org/toidentifier/-/toidentifier-1.0.1.tgz",
+-      "integrity": "sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=0.6"
+-      }
+-    },
+-    "node_modules/type-is": {
+-      "version": "1.6.18",
+-      "resolved": "https://registry.npmjs.org/type-is/-/type-is-1.6.18.tgz",
+-      "integrity": "sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "media-typer": "0.3.0",
+-        "mime-types": "~2.1.24"
+-      },
+-      "engines": {
+-        "node": ">= 0.6"
+-      }
+-    },
+-    "node_modules/uid-safe": {
+-      "version": "2.1.5",
+-      "resolved": "https://registry.npmjs.org/uid-safe/-/uid-safe-2.1.5.tgz",
+-      "integrity": "sha512-KPHm4VL5dDXKz01UuEd88Df+KzynaohSL9fBh096KWAxSKZQDI2uBrVqtvRM4rwrIrRRKsdLNML/lnaaVSRioA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "random-bytes": "~1.0.0"
+-      },
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/unpipe": {
+-      "version": "1.0.0",
+-      "resolved": "https://registry.npmjs.org/unpipe/-/unpipe-1.0.0.tgz",
+-      "integrity": "sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    },
+-    "node_modules/utils-merge": {
+-      "version": "1.0.1",
+-      "resolved": "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz",
+-      "integrity": "sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.4.0"
+-      }
+-    },
+-    "node_modules/vary": {
+-      "version": "1.1.2",
+-      "resolved": "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz",
+-      "integrity": "sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">= 0.8"
+-      }
+-    }
+-  }
+-}
+Index: Kanbas/Courses/routes.js
+===================================================================
+diff --git a/Kanbas/Courses/routes.js b/Kanbas/Courses/routes.js
+deleted file mode 100644
+--- a/Kanbas/Courses/routes.js	
++++ /dev/null	
+@@ -1,38 +0,0 @@
+-// DAO直接接触数据库，而Route决定了接收什么样的URL请求（客户端发出的HTTP通信协议）
+-// 对应着什么样的路径来调用DAO,接收dao返回的数据然后把这些内容放进app的回调函数(res.send or res.json)里面
+-// 并且，routes需要挂载到express的应用实例上面才能被识别处理
+-import * as dao from "./dao.js";
+-import * as modulesDao from "../Modules/dao.js";
+-
+-export default function CourseRoutes(app) {
+-  app.get("/api/courses/:courseId/modules", (req, res) => {
+-    const { courseId } = req.params;
+-    const modules = modulesDao.findModulesForCourse(courseId);
+-    res.json(modules);
+-  });
+-  app.get("/api/courses", (req, res) => {
+-    const courses = dao.findAllCourses();
+-    res.send(courses);
+-  });
+-  app.delete("/api/courses/:courseId", (req, res) => {
+-    const { courseId } = req.params;
+-    const status = dao.deleteCourse(courseId);
+-    res.send(status);
+-  });
+-  app.put("/api/courses/:courseId", (req, res) => {
+-    const { courseId } = req.params;
+-    const courseUpdates = req.body;
+-    const status = dao.updateCourse(courseId, courseUpdates);
+-    res.send(status);
+-  });
+-  app.post("/api/courses/:courseId/modules", (req, res) => {
+-    const { courseId } = req.params; // 从URL中解析的
+-    const module = {
+-      ...req.body,
+-      course: courseId, // 修改module的courseID属性
+-    };
+-    const newModule = modulesDao.createModule(module); // 用DataAccessObject的createModule函数，相信函数定义
+-    res.send(newModule); // 将新module返回
+-  });
+-
+-}
+Index: Kanbas/Modules/routes.js
+===================================================================
+diff --git a/Kanbas/Modules/routes.js b/Kanbas/Modules/routes.js
+deleted file mode 100644
+--- a/Kanbas/Modules/routes.js	
++++ /dev/null	
+@@ -1,29 +0,0 @@
+-import * as modulesDao from "./dao.js";
+-export default function ModuleRoutes(app) {
+-  app.delete("/api/modules/:moduleId", async (req, res) => {
+-    const {moduleId} = req.params;
+-    // await 确保在数据库删除操作完成后，
+-    // 才执行后续的 res.send(status)。
+-
+-    // 如果你不使用 await，那么代码会直接执行到下一行，
+-    // 可能还没等数据库删除完成就继续执行，
+-    // 这样返回给前端的 status 可能是错误的或未定义的
+-    const status = await modulesDao.deleteModule(moduleId);
+-    res.send(status);
+-  });
+-
+-  app.put("/api/modules/:moduleId", async (req, res) => {
+-    const {moduleId} = req.params;
+-    const moduleUpdates = req.body;
+-    const status = await modulesDao.updateModule(moduleId, moduleUpdates);
+-    res.send(status);
+-  });
+-  app.put("/api/modules/:moduleId", async (req, res) => {
+-    const {moduleId} = req.params;
+-    const moduleUpdates = req.body;
+-    const status = await modulesDao.updateModule(moduleId, moduleUpdates);
+-    res.send(status);
+-  });
+-
+-}
+-
+Index: Kanbas/Database/modules.js
+===================================================================
+diff --git a/Kanbas/Database/modules.js b/Kanbas/Database/modules.js
+deleted file mode 100644
+--- a/Kanbas/Database/modules.js	
++++ /dev/null	
+@@ -1,117 +0,0 @@
+-export default [
+-  {
+-    "_id": "M101",
+-    "name": "Introduction to Rocket Propulsion",
+-    "description": "Basic principles of rocket propulsion and rocket engines.",
+-    "course": "RS101",
+-    "lessons": [
+-      {
+-        "_id": "L101",
+-        "name": "History of Rocketry",
+-        "description": "A brief history of rocketry and space exploration.",
+-        "module": "M101"
+-      },
+-      {
+-        "_id": "L102",
+-        "name": "Rocket Propulsion Fundamentals",
+-        "description": "Basic principles of rocket propulsion.",
+-        "module": "M101"
+-      },
+-      {
+-        "_id": "L103",
+-        "name": "Rocket Engine Types",
+-        "description": "Overview of different types of rocket engines.",
+-        "module": "M101"
+-      }
+-    ]
+-  },
+-  {
+-    "_id": "M102",
+-    "name": "Fuel and Combustion",
+-    "description": "Understanding rocket fuel, combustion processes, and efficiency.",
+-    "course": "RS101",
+-    "lessons": [
+-      {
+-        "_id": "L201",
+-        "name": "Rocket Fuel",
+-        "description": "Overview of different types of rocket fuels.",
+-        "module": "M102"
+-      },
+-      {
+-        "_id": "L202",
+-        "name": "Combustion Processes",
+-        "description": "Understanding combustion processes and efficiency.",
+-        "module": "M102"
+-      },
+-      {
+-        "_id": "L203",
+-        "name": "Combustion Instability",
+-        "description": "Understanding combustion instability and mitigation.",
+-        "module": "M102"
+-      }
+-    ]
+-  },
+-  {
+-    "_id": "M103",
+-    "name": "Nozzle Design",
+-    "description": "Principles of rocket nozzle design and performance optimization.",
+-    "course": "RS101",
+-    "lessons": [
+-      {
+-        "_id": "L301",
+-        "name": "Nozzle Design",
+-        "description": "Overview of different types of rocket nozzles.",
+-        "module": "M103"
+-      },
+-      {
+-        "_id": "L302",
+-        "name": "Nozzle Performance",
+-        "description": "Understanding nozzle performance and efficiency.",
+-        "module": "M103"
+-      },
+-      {
+-        "_id": "L303",
+-        "name": "Nozzle Optimization",
+-        "description": "Optimizing nozzle design for specific applications.",
+-        "module": "M103"
+-      }
+-    ]
+-  },
+-  {
+-    "_id": "M201",
+-    "name": "Fundamentals of Aerodynamics",
+-    "description": "Basic aerodynamic concepts and fluid dynamics principles.",
+-    "course": "RS102"
+-  },
+-  {
+-    "_id": "M202",
+-    "name": "Subsonic and Supersonic Flow",
+-    "description": "Understanding subsonic and supersonic aerodynamic behaviors.",
+-    "course": "RS102"
+-  },
+-  {
+-    "_id": "M203",
+-    "name": "Aerodynamic Heating",
+-    "description": "Study of aerodynamic heating and thermal protection systems.",
+-    "course": "RS102"
+-  },
+-  {
+-    "_id": "M301",
+-    "name": "Spacecraft Structural Design",
+-    "description": "Fundamentals of designing spacecraft structures and materials selection.",
+-    "course": "RS103"
+-  },
+-  {
+-    "_id": "M302",
+-    "name": "Orbital Mechanics",
+-    "description": "Understanding orbital dynamics and mission planning.",
+-    "course": "RS103"
+-  },
+-  {
+-    "_id": "M303",
+-    "name": "Spacecraft Systems Engineering",
+-    "description": "Overview of spacecraft systems and subsystems engineering.",
+-    "course": "RS103"
+-  }
+-]
+-
+Index: Lab5/PathParameters.js
+===================================================================
+diff --git a/Lab5/PathParameters.js b/Lab5/PathParameters.js
+deleted file mode 100644
+--- a/Lab5/PathParameters.js	
++++ /dev/null	
+@@ -1,24 +0,0 @@
+-export default function PathParameters(app) {
+-  app.get("/lab5/add/:a/:b", (req, res) => {
+-    const { a, b } = req.params;
+-    const sum = parseInt(a) + parseInt(b);
+-    res.send(sum.toString());
+-  });
+-  app.get("/lab5/subtract/:a/:b", (req, res) => {
+-    const { a, b } = req.params;
+-    const sum = parseInt(a) - parseInt(b);
+-    res.send(sum.toString());
+-  });
+-  app.get("/lab5/multiply/:a/:b", (req, res) => {
+-    const { a, b } = req.params;
+-    const sum = parseInt(a) * parseInt(b);
+-    res.send(sum.toString());
+-  });
+-  app.get("/lab5/divide/:a/:b", (req, res) => {
+-    const { a, b } = req.params;
+-    const sum = parseInt(a) / parseInt(b);
+-    res.send(sum.toString());
+-  });
+-
+-};
+-
+Index: Kanbas/Database/users.js
+===================================================================
+diff --git a/Kanbas/Database/users.js b/Kanbas/Database/users.js
+deleted file mode 100644
+--- a/Kanbas/Database/users.js	
++++ /dev/null	
+@@ -1,114 +0,0 @@
+-export default [
+-  {
+-    "_id": "123",
+-    "username": "iron_man",
+-    "password": "stark123",
+-    "firstName": "Tony",
+-    "lastName": "Stark",
+-    "email": "tony@stark.com",
+-    "dob": "1970-05-29T00:00:00.000Z",
+-    "role": "FACULTY",
+-    "loginId": "001234561S",
+-    "section": "S101",
+-    "lastActivity": "2020-10-01",
+-    "totalActivity": "10:21:32"
+-  },
+-  {
+-    "_id": "234",
+-    "username": "dark_knight",
+-    "password": "wayne123",
+-    "firstName": "Bruce",
+-    "lastName": "Wayne",
+-    "email": "bruce@wayne.com",
+-    "dob": "1972-02-19",
+-    "role": "STUDENT",
+-    "loginId": "001234562S",
+-    "section": "S101",
+-    "lastActivity": "2020-11-02",
+-    "totalActivity": "15:32:43"
+-  },
+-  {
+-    "_id": "345",
+-    "username": "black_widow",
+-    "password": "romanoff123",
+-    "firstName": "Natasha",
+-    "lastName": "Romanoff",
+-    "email": "natasha@avengers.com",
+-    "dob": "1984-11-22",
+-    "role": "TA",
+-    "loginId": "001234564S",
+-    "section": "S101",
+-    "lastActivity": "2020-11-05",
+-    "totalActivity": "13:23:34"
+-  },
+-  {
+-    "_id": "456",
+-    "username": "thor_odinson",
+-    "password": "mjolnir123",
+-    "firstName": "Thor",
+-    "lastName": "Odinson",
+-    "email": "thor@asgard.com",
+-    "dob": "0982-05-25",
+-    "role": "STUDENT",
+-    "loginId": "001234565S",
+-    "section": "S101",
+-    "lastActivity": "2020-12-01",
+-    "totalActivity": "11:22:33"
+-  },
+-  {
+-    "_id": "567",
+-    "username": "hulk_smash",
+-    "password": "banner123",
+-    "firstName": "Bruce",
+-    "lastName": "Banner",
+-    "email": "bruce@avengers.com",
+-    "dob": "1969-12-18",
+-    "role": "STUDENT",
+-    "loginId": "001234566S",
+-    "section": "S101",
+-    "lastActivity": "2020-12-01",
+-    "totalActivity": "22:33:44"
+-  },
+-  {
+-    "_id": "678",
+-    "username": "ring_bearer",
+-    "password": "shire123",
+-    "firstName": "Frodo",
+-    "lastName": "Baggins",
+-    "email": "frodo@shire.com",
+-    "dob": "1368-09-22",
+-    "role": "FACULTY",
+-    "loginId": "001234567S",
+-    "section": "S101",
+-    "lastActivity": "2020-12-02",
+-    "totalActivity": "44:33:22"
+-  },
+-  {
+-    "_id": "789",
+-    "username": "strider",
+-    "password": "aragorn123",
+-    "firstName": "Aragorn",
+-    "lastName": "Elessar",
+-    "email": "aragorn@gondor.com",
+-    "dob": "2931-03-01",
+-    "role": "TA",
+-    "loginId": "001234568S",
+-    "section": "S101",
+-    "lastActivity": "2020-12-04",
+-    "totalActivity": "12:23:34"
+-  },
+-  {
+-    "_id": "890",
+-    "username": "elf_archer",
+-    "password": "legolas123",
+-    "firstName": "Legolas",
+-    "lastName": "Greenleaf",
+-    "email": "legolas@mirkwood.com",
+-    "dob": "2879-07-15",
+-    "role": "STUDENT",
+-    "loginId": "001234569S",
+-    "section": "S101",
+-    "lastActivity": "2020-11-11",
+-    "totalActivity": "21:32:43"
+-  }
+-]
+Index: Kanbas/Enrollments/dao.js
+===================================================================
+diff --git a/Kanbas/Enrollments/dao.js b/Kanbas/Enrollments/dao.js
+deleted file mode 100644
+--- a/Kanbas/Enrollments/dao.js	
++++ /dev/null	
+@@ -1,18 +0,0 @@
+-import Database from "../Database/index.js";
+-export function enrollUserInCourse(userId, courseId) {
+-  const { enrollments } = Database;
+-  enrollments.push({ _id: Date.now().toString(), user: userId.toString(), course: courseId.toString() });
+-}
+-
+-export function deleteEnrollment(userId, courseId) {
+-  const { enrollments } = Database;
+-  Database.enrollments = enrollments.filter(
+-    // filter=>后面的是符合留下来的条件的元素
+-    (enrollment) => enrollment.user!== userId || enrollment.course!== courseId
+-  );
+-}
+-
+-export function fetchAllEnrollment() {
+-  const { enrollments } = Database;
+-  return enrollments
+-}
+Index: Kanbas/Modules/dao.js
+===================================================================
+diff --git a/Kanbas/Modules/dao.js b/Kanbas/Modules/dao.js
+deleted file mode 100644
+--- a/Kanbas/Modules/dao.js	
++++ /dev/null	
+@@ -1,21 +0,0 @@
+-import Database from "../Database/index.js";
+-export function findModulesForCourse(courseId) {
+-  const { modules } = Database;
+-  return modules.filter((module) => module.course === courseId);
+-}
+-export function createModule(module) {
+-  const newModule = { ...module, _id: Date.now().toString() };
+-  Database.modules = [...Database.modules, newModule];
+-  return newModule;
+-}
+-// 移除当前数据库里和传入id相符的module
+-export function deleteModule(moduleId) {
+-  const { modules } = Database;
+-  Database.modules = modules.filter((module) => module._id !== moduleId);
+-}
+-export function updateModule(moduleId, moduleUpdates) {
+-  const { modules } = Database;
+-  const module = modules.find((module) => module._id === moduleId);
+-  Object.assign(module, moduleUpdates); // 将moduleUpdates里面所有的属性赋值给module
+-  return module;
+-}
+Index: Kanbas/Users/dao.js
+===================================================================
+diff --git a/Kanbas/Users/dao.js b/Kanbas/Users/dao.js
+deleted file mode 100644
+--- a/Kanbas/Users/dao.js	
++++ /dev/null	
+@@ -1,16 +0,0 @@
+-// 本文件把对数据库的操作进行集中封装（高内聚High Cohesion：这个模块的功能紧密相关），这样在调用的时候就不用关心具体数据库的选型
+-// 若要切换数据库，只需要更改 dao.js 中的逻辑，而不需要修改与之交互的其他部分。（低耦合Low Coupling）
+-// 它的目的是让其他部分的代码（如服务或控制器）与数据存储层进行隔离，使得更改底层数据库的实现不会影响到应用程序的其他部分。
+-import db from "../Database/index.js";
+-// 从index.js导入db，并且赋值为users
+-let { users } = db;
+-export const createUser = (user) => (users = [...users, { ...user, _id: Date.now().toString() }]);
+-export const findAllUsers = () => users;
+-export const findUserById = (userId) => users.find((user) => user._id === userId);
+-export const findUserByUsername = (username) => users.find((user) => user.username === username);
+-export const findUserByCredentials = (username, password) =>
+-  users.find( (user) => user.username === username && user.password === password );
+-// 遍历，直到id符合条件的时候把对应的user直接换成传入的user数据
+-export const updateUser = (userId, user) => (users = users.map((u) => (u._id === userId ? user : u)));
+-export const deleteUser = (userId) => (users = users.filter((u) => u._id !== userId));
+-
+Index: Kanbas/Users/routes.js
+===================================================================
+diff --git a/Kanbas/Users/routes.js b/Kanbas/Users/routes.js
+deleted file mode 100644
+--- a/Kanbas/Users/routes.js	
++++ /dev/null	
+@@ -1,113 +0,0 @@
+-// Routes（routes.js） 将DAO的数据操作暴露为 API 端点，并定义了如何处理前端发送的请求。
+-// routes在前端和dao之间，作为中间层MiddleTier。负责把前端的请求转换为对DAO的调用。把DAO的结果返回给前端
+-
+-import * as dao from "./dao.js";
+-import * as courseDao from "../Courses/dao.js";
+-import * as enrollmentsDao from "../Enrollments/dao.js";
+-// let currentUser = null;
+-export default function UserRoutes(app) {
+-  const createUser = (req, res) => {
+-  };
+-  const deleteUser = (req, res) => {
+-  };
+-  const findAllUsers = (req, res) => {
+-  };
+-  const findUserById = (req, res) => {
+-  };
+-
+-  const updateUser = (req, res) => {
+-    const userId = req.params.userId;
+-    const userUpdates = req.body;
+-    // 将需要更新的部分放在body里面一起传递给dao内的update方法
+-    dao.updateUser(userId, userUpdates);
+-    // 一旦完成，我将用id来获得新的user，并且返回
+-    const currentUser = dao.findUserById(userId);
+-    // 同步更新session里的user
+-    req.session["currentUser"] = currentUser;
+-    res.json(currentUser);
+-  };
+-  const signup = (req, res) => {
+-    // 相信函数定义
+-    // 首先检查用户是否已经存在。
+-    const user = dao.findUserByUsername(req.body.username);
+-    if (user) {
+-      res.status(400).json(
+-        {message: "Username already in use"});
+-      return;
+-    }
+-    const currentUser = dao.createUser(req.body);
+-    // 每一个不同的cookie将会有不同的session，每一个session里像hash一样记录下不同的currentUser（当前登录用户）
+-    req.session["currentUser"] = currentUser;
+-    res.json(currentUser);
+-  };
+-  const signin = (req, res) => {
+-    const {username, password} = req.body;
+-    const currentUser = dao.findUserByCredentials(username, password);
+-    if (currentUser) {
+-      // 如果能找到，就在session里面记录当前的user
+-      req.session["currentUser"] = currentUser;
+-      res.json(currentUser);
+-    } else {
+-      res.status(401).json({message: "Unable to login. Try again later."});
+-    }
+-
+-  };
+-  const signout = (req, res) => {
+-    // 通过摧毁当前session来登出
+-    req.session.destroy();
+-    res.sendStatus(200);
+-  };
+-
+-
+-  // profile函数将当前的用户用route进行暴露：返回当前user
+-  const profile = async (req, res) => {
+-    // 声明局部变量，用session的cU赋值
+-    const currentUser = req.session["currentUser"];
+-    if (!currentUser) {
+-      // 如果找不到就返回错误
+-      res.sendStatus(401);
+-      return;
+-    }
+-
+-    res.json(currentUser);
+-  };
+-  const findCoursesForEnrolledUser = (req, res) => {
+-    let {userId} = req.params;
+-    if (userId === "current") {
+-      const currentUser = req.session["currentUser"];
+-      if (!currentUser) {
+-        res.sendStatus(401);
+-        return;
+-      }
+-      userId = currentUser._id;
+-    }
+-    const courses = courseDao.findCoursesForEnrolledUser(userId);
+-    res.json(courses);
+-  };
+-  // 因为希望确保创始人能够访问到课程，所以创建课程在users的上下文中进行
+-  // 课程定的标准：优先迁就user
+-  const createCourse = (req, res) => {
+-    const currentUser = req.session["currentUser"];
+-    const newCourse = courseDao.createCourse(req.body);
+-    enrollmentsDao.enrollUserInCourse(currentUser._id, newCourse._id);
+-    res.json(newCourse);
+-  };
+-
+-  app.post("/api/users/current/courses", createCourse);
+-
+-
+-  app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+-
+-  // 这些是利用DAO可以进行的操作
+-  app.post("/api/users", createUser);
+-  app.get("/api/users", findAllUsers);
+-  app.get("/api/users/:userId", findUserById);
+-  app.put("/api/users/:userId", updateUser);
+-  app.delete("/api/users/:userId", deleteUser);
+-  app.post("/api/users/signup", signup);
+-  app.post("/api/users/signin", signin);
+-  app.post("/api/users/signout", signout);
+-  // post接收两个函数，一个".../profile"是URL路径，当匹配时服务器会处理这个请求。
+-  // 第二个profile是回调函数，决定了服务器如何处理这个请求
+-  app.post("/api/users/profile", profile);
+-}
+Index: .idea/jarRepositories.xml
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+deleted file mode 100644
+--- a/.idea/jarRepositories.xml	
++++ /dev/null	
+@@ -1,20 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="RemoteRepositoriesConfiguration">
+-    <remote-repository>
+-      <option name="id" value="central" />
+-      <option name="name" value="Maven Central repository" />
+-      <option name="url" value="https://repo1.maven.org/maven2" />
+-    </remote-repository>
+-    <remote-repository>
+-      <option name="id" value="jboss.community" />
+-      <option name="name" value="JBoss Community repository" />
+-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+-    </remote-repository>
+-    <remote-repository>
+-      <option name="id" value="MavenRepo" />
+-      <option name="name" value="MavenRepo" />
+-      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+-    </remote-repository>
+-  </component>
+-</project>
+\ No newline at end of file
+Index: Lab5/WorkingWithObjects.js
+===================================================================
+diff --git a/Lab5/WorkingWithObjects.js b/Lab5/WorkingWithObjects.js
+deleted file mode 100644
+--- a/Lab5/WorkingWithObjects.js	
++++ /dev/null	
+@@ -1,56 +0,0 @@
+-const assignment = {
+-  id: 1, title: "NodeJS Assignment",
+-  description: "Create a NodeJS server with ExpressJS",
+-  due: "2021-10-10", completed: false, score: 0,
+-};
+-const module = {
+-  id: "6",
+-  name: "Jinx",
+-  description: "Used to be named Powder",
+-  course: "None"
+-};
+-export default function WorkingWithObjects(app) {
+-  // assignment Routes
+-  app.get("/lab5/assignment", (req, res) => {
+-    res.json(assignment);
+-  });
+-  app.get("/lab5/assignment/title", (req, res) => {
+-    res.json(assignment.title);
+-  });
+-  app.get("/lab5/assignment/title/:newTitle", (req, res) => {
+-    const { newTitle } = req.params;
+-    assignment.title = newTitle;
+-    res.json(assignment);
+-  });
+-  app.get("/lab5/assignment/score/:newScore", (req, res) => {
+-    const { newScore } = req.params;
+-    assignment.score = parseInt(newScore, 10);
+-    res.json(assignment);
+-  });
+-  app.get("/lab5/assignment/completed/:status", (req, res) => {
+-    const { status } = req.params;
+-    assignment.completed = status === "true";
+-    res.json(assignment);
+-  });
+-
+-
+-  // 通过get创造一个路由，当react访问这个URL的时候返回一个json
+-  app.get("/lab5/module", (req, res) => {
+-    res.json(module);
+-  });
+-  app.get("/lab5/module/name", (req, res) => {
+-    res.json(module.name);
+-  });
+-  // 把newName从get请求的URL里解构出来，并且更新server端的moduleconst
+-  app.get("/lab5/module/name/:newName", (req, res) => {
+-    const { newName } = req.params;
+-    module.name = newName;
+-    res.json(module);
+-  });
+-  app.get("/lab5/module/description/:newDescription", (req, res) => {
+-    const { newDescription } = req.params;
+-    module.description = newDescription;
+-    res.json(module);
+-  });
+-
+-};
+Index: Kanbas/Database/enrollments.js
+===================================================================
+diff --git a/Kanbas/Database/enrollments.js b/Kanbas/Database/enrollments.js
+deleted file mode 100644
+--- a/Kanbas/Database/enrollments.js	
++++ /dev/null	
+@@ -1,11 +0,0 @@
+-export default [
+-  { "_id": "1", "user": "123", "course": "RS101" },
+-  { "_id": "2", "user": "234", "course": "RS101" },
+-  { "_id": "3", "user": "345", "course": "RS101" },
+-  { "_id": "4", "user": "456", "course": "RS101" },
+-  { "_id": "5", "user": "567", "course": "RS101" },
+-  { "_id": "6", "user": "234", "course": "RS102" },
+-  { "_id": "7", "user": "789", "course": "RS102" },
+-  { "_id": "8", "user": "890", "course": "RS102" },
+-  { "_id": "9", "user": "123", "course": "RS102" }
+-]
+Index: Lab5/WorkingWithArrays.js
+===================================================================
+diff --git a/Lab5/WorkingWithArrays.js b/Lab5/WorkingWithArrays.js
+deleted file mode 100644
+--- a/Lab5/WorkingWithArrays.js	
++++ /dev/null	
+@@ -1,110 +0,0 @@
+-let todos = [{id: 1, title: "Task 1", completed: false}, {id: 2, title: "Task 2", completed: true},
+-  {id: 3, title: "Task 3", completed: false}, {id: 4, title: "Task 4", completed: true},];
+-export default function WorkingWithArrays(app) {
+-  // create必须要在：id的get请求定义之前，因为可能会把他当成id
+-  app.get("/lab5/todos/create", (req, res) => {
+-    const newTodo = {
+-      id: new Date().getTime(),
+-      title: "New Task",
+-      completed: false,
+-    };
+-    todos.push(newTodo);
+-    res.json(todos);
+-  });
+-  app.post("/lab5/todos", (req, res) => {
+-    const newTodo = {...req.body, id: new Date().getTime()};
+-    todos.push(newTodo);
+-    res.json(newTodo);
+-  });
+-
+-  app.get("/lab5/todos/:id", (req, res) => {
+-    const {id} = req.params;
+-    const todo = todos.find((t) => t.id === parseInt(id));
+-    res.json(todo);
+-  });
+-  app.get("/lab5/todos", (req, res) => {
+-    const {completed} = req.query;
+-    if (completed !== undefined) {
+-      const completedBool = completed === "true";
+-      const completedTodos = todos.filter(
+-        (t) => t.completed === completedBool);
+-      res.json(completedTodos);
+-      return;
+-    }
+-    res.json(todos);
+-  });
+-
+-
+-  app.get("/lab5/todos/:id/delete", (req, res) => {
+-    const {id} = req.params;
+-    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+-    todos.splice(todoIndex, 1);
+-    res.json(todos);
+-  });
+-  app.delete("/lab5/todos/:id", (req, res) => {
+-    const {id} = req.params;
+-    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+-    // 进行错误的捕捉处理
+-    if (todoIndex === -1) {
+-      res.status(404).json({message: `Unable to delete Todo with ID ${id}`});
+-      return;
+-    }
+-
+-    todos.splice(todoIndex, 1);
+-    res.sendStatus(200);
+-  });
+-
+-
+-  app.get("/lab5/todos/:id/title/:title", (req, res) => {
+-    const {id, title} = req.params;
+-    const todo = todos.find((t) => t.id === parseInt(id));
+-    todo.title = title;
+-    res.json(todos);
+-  });
+-  // 通过put请求来进行修改某一个todo
+-  app.put("/lab5/todos/:id", (req, res) => {
+-    const {id} = req.params;
+-    // 根据id锁定index，如果看不到index，那么就返回404
+-    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+-    if (todoIndex === -1) {
+-      res.status(404).json({message: `Unable to update Todo with ID ${id}`});
+-      return;
+-    }
+-
+-    todos = todos.map((t) => {
+-      if (t.id === parseInt(id)) {
+-        // 复制老的属性的所有，然后用req.body覆盖所有包含了的属性
+-        return {...t, ...req.body};
+-      }
+-      return t;
+-    });
+-    // 与其返回所有的todos，这里只返回一个执行后的状态：是否成功
+-    res.sendStatus(200);
+-  });
+-
+-
+-  // 根据id得到todo，并且修改他的complete属性
+-  app.get("/lab5/todos/:id/completed/:completed", (req, res) => {
+-    const {completed} = req.params;
+-    const {id} = req.params;
+-    if (completed !== undefined) {
+-      const completedBool = completed === "true";
+-      const todo = todos.find((t) => t.id === parseInt(id));
+-      todo.completed = completedBool;
+-      res.json(todos);
+-      return;
+-    }
+-    res.json(todos);
+-  })
+-  // 同理，修改他的description属性
+-  app.get("/lab5/todos/:id/description/:description", (req, res) => {
+-    const {description} = req.params;
+-    const {id} = req.params;
+-    const todo = todos.find((t) => t.id === parseInt(id));
+-    todo.description = description;
+-    res.json(todos);
+-
+-  })
+-
+-
+-};
