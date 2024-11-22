@@ -31,7 +31,7 @@ export default [
   },
   {
     "_id": "A201",
-    "title": "Aerodynamics Quiz",
+    "title": "Aerodynamics Quiz Jinxed",
     "course": "RS102",
     "description": "Take the aerodynamics quiz covering fundamental principles.",
     "points": 50,
