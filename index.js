@@ -8,6 +8,7 @@ import CourseRoutes from "./Kanbas/Courses/routes.js";
 import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import AssignmentRoutes from "./Kanbas/Assignments/routes.js";
 import "dotenv/config";
+import EnrollmentRoutes from "./Kanbas/Enrollments/routes.js";
 
 const app = express()
 // 验证请求里是否存在一个可以被解析为JsonObject的String
@@ -45,7 +46,7 @@ app.use(
 // 将routes也添加进express里
 UserRoutes(app);
 CourseRoutes(app);
-// EnrollmentRoutes(app);
+EnrollmentRoutes(app);
 Hello(app)
 Lab5(app);
 ModuleRoutes(app);
