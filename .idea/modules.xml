@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/kanbas-node-server-app-cs5610-fa24.iml" filepath="$PROJECT_DIR$/kanbas-node-server-app-cs5610-fa24.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/kanbas-node-server-app.iml" filepath="$PROJECT_DIR$/.idea/kanbas-node-server-app.iml" />
     </modules>
   </component>
 </project>

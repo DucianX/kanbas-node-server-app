@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6b8b201-99e1-4351-87a5-5f688146ef32" name="Changes" comment="" />
+    <list default="true" id="c6b8b201-99e1-4351-87a5-5f688146ef32" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,18 +28,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "DucianX"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;DucianX&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/DucianX/kanbas-node-server-app.git",
-    "accountId": "e5a1a0b8-cb70-48a7-9323-bb22e831ac83"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DucianX/kanbas-node-server-app.git&quot;,
+    &quot;accountId&quot;: &quot;e5a1a0b8-cb70-48a7-9323-bb22e831ac83&quot;
   }
-}]]></component>
+}</component>
   <component name="GradleLocalSettings">
     <option name="modificationStamps">
       <map>
@@ -160,6 +163,7 @@
       <updated>1731634537587</updated>
       <workItem from="1731634538707" duration="111809000" />
       <workItem from="1732253680615" duration="1198000" />
+      <workItem from="1732496694072" duration="24000" />
     </task>
     <servers />
   </component>
