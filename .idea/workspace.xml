@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6b8b201-99e1-4351-87a5-5f688146ef32" name="Changes" comment="" />
+    <list default="true" id="c6b8b201-99e1-4351-87a5-5f688146ef32" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,6 +27,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;DucianX&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DucianX/kanbas-node-server-app.git&quot;,
+    &quot;accountId&quot;: &quot;e5a1a0b8-cb70-48a7-9323-bb22e831ac83&quot;
+  }
+}</component>
   <component name="GradleLocalSettings">
     <option name="modificationStamps">
       <map>
@@ -41,15 +55,18 @@
   <component name="ProjectId" id="2orjLtjttfaSYHKZUuqKSpcCjeB" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="flattenModules" value="true" />
+    <option name="flattenPackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+    <option name="showVisibilityIcons" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;8039cdbd&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/reborn/Desktop/2024Fall/5610WebDev/kanbas-node-server-app/kanbas-node-server-app/Kanbas&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/reborn/Desktop/2024Fall/5610WebDev/kanbas-node-server-app/kanbas-node-server-app&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -138,6 +155,11 @@
       <option name="presentableId" value="Default" />
       <updated>1731634537587</updated>
       <workItem from="1731634538707" duration="111809000" />
+      <workItem from="1732667718864" duration="185000" />
+      <workItem from="1732667910519" duration="11000" />
+      <workItem from="1732668048462" duration="20000" />
+      <workItem from="1732668135974" duration="174000" />
+      <workItem from="1732668330238" duration="6464000" />
     </task>
     <servers />
   </component>
