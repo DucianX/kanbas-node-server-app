@@ -35,4 +35,9 @@ export default function CourseRoutes(app) {
     res.send(newModule); // 将新module返回
   });
 
+  app.post("/api/courses/getEnrolledCourses", (req, res) => {
+    const { userId } = req.body;
+    const enrolledCourses = dao.findCoursesForEnrolledUser(userId);
+    res.send(enrolledCourses);
+  });
 }
