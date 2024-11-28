@@ -31,6 +31,7 @@ export default function AssignmentRoutes(app) {
   // 编辑一个assignment,返回编辑成功与否
   app.put("/api/assignments/:assignmentId", async (req, res) => {
     const {assignmentId} = req.params;
+    // 这是最新的assignment数据
     const assignmentUpdates = req.body;
     const status = await dao.updateAssignment(assignmentId, assignmentUpdates);
     res.send(status);
