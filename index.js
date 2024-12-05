@@ -9,7 +9,12 @@ import ModuleRoutes from "./Kanbas/Modules/routes.js";
 import AssignmentRoutes from "./Kanbas/Assignments/routes.js";
 import "dotenv/config";
 import EnrollmentRoutes from "./Kanbas/Enrollments/routes.js";
+import mongoose from "mongoose";
+import "dotenv/config";
 
+// mongodb协议，本地服务器，端口27017，想要连接到的数据库的名字
+const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas-cs5610-fa24"
+mongoose.connect(CONNECTION_STRING);
 const app = express()
 // 验证请求里是否存在一个可以被解析为JsonObject的String
 app.use(express.json());

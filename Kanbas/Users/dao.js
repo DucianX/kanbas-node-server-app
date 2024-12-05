@@ -2,6 +2,7 @@
 // 若要切换数据库，只需要更改 dao.js 中的逻辑，而不需要修改与之交互的其他部分。（低耦合Low Coupling）
 // 它的目的是让其他部分的代码（如服务或控制器）与数据存储层进行隔离，使得更改底层数据库的实现不会影响到应用程序的其他部分。
 import db from "../Database/index.js";
+
 // 从index.js导入db，并且赋值为users
 let { users } = db;
 export const createUser = (user) => (users = [...users, { ...user, _id: Date.now().toString() }]);
