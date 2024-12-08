@@ -13,19 +13,27 @@ export default function UserRoutes(app) {
   };
   const findAllUsers = async (req, res) => {
     // 如果还包含了requery，那么进行过滤
-    const { role } = req.query;
+    const { role, name } = req.query;
     if (role) {
       const users = await dao.findUsersByRole(role);
       res.json(users);
       return; // 跳过下面的response
+    }
+    if (name) {
+      const users = await dao.findUsersByPartialName(name);
+      res.json(users);
+      return;
     }
 
     const users = await dao.findAllUsers();
     res.json(users);
   };
 
-  const findUserById = (req, res) => {
+  const findUserById = async (req, res) => {
+    const user = await dao.findUserById(req.params.userId);
+    res.json(user);
   };
+
 // 和数据库的交流需要用async异步函数，await等待回传信息
   const updateUser = async (req, res) => {
     const userId = req.params.userId;
@@ -122,4 +130,6 @@ export default function UserRoutes(app) {
   // post接收两个函数，一个".../profile"是URL路径，当匹配时服务器会处理这个请求。
   // 第二个profile是回调函数，决定了服务器如何处理这个请求
   app.post("/api/users/profile", profile);
+  app.get("/api/users/:userId", findUserById);
+
 }
