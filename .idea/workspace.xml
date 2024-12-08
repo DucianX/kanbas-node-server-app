@@ -6,6 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c6b8b201-99e1-4351-87a5-5f688146ef32" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kanbas/Users/dao.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Users/dao.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kanbas/Users/model.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Users/model.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kanbas/Users/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Users/routes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +171,8 @@
       <workItem from="1733178400958" duration="1628000" />
       <workItem from="1733281742626" duration="5328000" />
       <workItem from="1733360411428" duration="472000" />
-      <workItem from="1733369537220" duration="3807000" />
+      <workItem from="1733369537220" duration="25432000" />
+      <workItem from="1733624327818" duration="7052000" />
     </task>
     <servers />
   </component>
@@ -183,7 +187,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/Kanbas/Users/routes.js</url>
-          <line>98</line>
+          <line>110</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>

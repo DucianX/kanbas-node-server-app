@@ -6,43 +6,55 @@ import * as courseDao from "../Courses/dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 // let currentUser = null;
 export default function UserRoutes(app) {
+  // 因为涉及到了服务器的返回，我们需要把所有的函数设置为异步函数
   const createUser = (req, res) => {
   };
   const deleteUser = (req, res) => {
   };
-  const findAllUsers = (req, res) => {
-  };
-  const findUserById = (req, res) => {
+  const findAllUsers = async (req, res) => {
+    // 如果还包含了requery，那么进行过滤
+    const { role } = req.query;
+    if (role) {
+      const users = await dao.findUsersByRole(role);
+      res.json(users);
+      return; // 跳过下面的response
+    }
+
+    const users = await dao.findAllUsers();
+    res.json(users);
   };
 
-  const updateUser = (req, res) => {
+  const findUserById = (req, res) => {
+  };
+// 和数据库的交流需要用async异步函数，await等待回传信息
+  const updateUser = async (req, res) => {
     const userId = req.params.userId;
     const userUpdates = req.body;
     // 将需要更新的部分放在body里面一起传递给dao内的update方法
-    dao.updateUser(userId, userUpdates);
+    await dao.updateUser(userId, userUpdates);
     // 一旦完成，我将用id来获得新的user，并且返回
-    const currentUser = dao.findUserById(userId);
+    const currentUser = await dao.findUserById(userId);
     // 同步更新session里的user
     req.session["currentUser"] = currentUser;
     res.json(currentUser);
   };
-  const signup = (req, res) => {
+  const signup = async(req, res) => {
     // 相信函数定义
     // 首先检查用户是否已经存在。
-    const user = dao.findUserByUsername(req.body.username);
+    const user = await dao.findUserByUsername(req.body.username);
     if (user) {
       res.status(400).json(
         {message: "Username already in use"});
       return;
     }
-    const currentUser = dao.createUser(req.body);
+    const currentUser = await dao.createUser(req.body);
     // 每一个不同的cookie将会有不同的session，每一个session里像hash一样记录下不同的currentUser（当前登录用户）
     req.session["currentUser"] = currentUser;
     res.json(currentUser);
   };
-  const signin = (req, res) => {
+  const signin = async(req, res) => {
     const {username, password} = req.body;
-    const currentUser = dao.findUserByCredentials(username, password);
+    const currentUser = await dao.findUserByCredentials(username, password);
     if (currentUser) {
       // 如果能找到，就在session里面记录当前的user
       req.session["currentUser"] = currentUser;
@@ -52,7 +64,7 @@ export default function UserRoutes(app) {
     }
 
   };
-  const signout = (req, res) => {
+  const signout = async (req, res) => {
     // 通过摧毁当前session来登出
     req.session.destroy();
     res.sendStatus(200);
@@ -71,7 +83,7 @@ export default function UserRoutes(app) {
 
     res.json(currentUser);
   };
-  const findCoursesForEnrolledUser = (req, res) => {
+  const findCoursesForEnrolledUser = async(req, res) => {
     let {userId} = req.params;
     if (userId === "current") {
       const currentUser = req.session["currentUser"];
@@ -81,15 +93,15 @@ export default function UserRoutes(app) {
       }
       userId = currentUser._id;
     }
-    const courses = courseDao.findCoursesForEnrolledUser(userId);
+    const courses = await courseDao.findCoursesForEnrolledUser(userId);
     res.json(courses);
   };
   // 因为希望确保创始人能够访问到课程，所以创建课程在users的上下文中进行
   // 课程定的标准：优先迁就user
-  const createCourse = (req, res) => {
+  const createCourse = async(req, res) => {
     const currentUser = req.session["currentUser"];
-    const newCourse = courseDao.createCourse(req.body);
-    enrollmentsDao.enrollUserInCourse(currentUser._id, newCourse._id);
+    const newCourse = await courseDao.createCourse(req.body);
+    await enrollmentsDao.enrollUserInCourse(currentUser._id, newCourse._id);
     res.json(newCourse);
   };
 
