@@ -171,7 +171,7 @@
       <workItem from="1733281742626" duration="5328000" />
       <workItem from="1733360411428" duration="472000" />
       <workItem from="1733369537220" duration="25432000" />
-      <workItem from="1733624327818" duration="10196000" />
+      <workItem from="1733624327818" duration="18469000" />
     </task>
     <servers />
   </component>
@@ -180,16 +180,5 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/Kanbas/Users/routes.js</url>
-          <line>118</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

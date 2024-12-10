@@ -7,10 +7,16 @@ import * as enrollmentsDao from "../Enrollments/dao.js";
 // let currentUser = null;
 export default function UserRoutes(app) {
   // 因为涉及到了服务器的返回，我们需要把所有的函数设置为异步函数
-  const createUser = (req, res) => {
+  const createUser = async (req, res) => {
+    const user = await dao.createUser(req.body);
+    res.json(user);
   };
-  const deleteUser = (req, res) => {
+
+  const deleteUser = async (req, res) => {
+    const status = await dao.deleteUser(req.params.userId);
+    res.json(status);
   };
+
   const findAllUsers = async (req, res) => {
     // 如果还包含了requery，那么进行过滤
     const { role, name } = req.query;
@@ -41,9 +47,11 @@ export default function UserRoutes(app) {
     // 将需要更新的部分放在body里面一起传递给dao内的update方法
     await dao.updateUser(userId, userUpdates);
     // 一旦完成，我将用id来获得新的user，并且返回
-    const currentUser = await dao.findUserById(userId);
-    // 同步更新session里的user
-    req.session["currentUser"] = currentUser;
+    const currentUser = req.session["currentUser"];
+    if (currentUser && currentUser._id === userId) {
+      req.session["currentUser"] = { ...currentUser, ...userUpdates };
+    }
+
     res.json(currentUser);
   };
   const signup = async(req, res) => {

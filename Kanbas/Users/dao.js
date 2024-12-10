@@ -17,7 +17,7 @@
 import model from "./model.js";
 
 export const createUser = (user) => {
-  delete user._id;
+  delete user._id; // 移除clientfield，让服务器的Model.create(user)创建他
   return model.create(user);
 } // implemented later
 export const findAllUsers = () => model.find(); // 相当于select * from users
