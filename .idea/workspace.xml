@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6b8b201-99e1-4351-87a5-5f688146ef32" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kanbas/Courses/dao.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Courses/dao.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Kanbas/Courses/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Courses/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +169,7 @@
       <workItem from="1733281742626" duration="5328000" />
       <workItem from="1733360411428" duration="472000" />
       <workItem from="1733369537220" duration="25432000" />
-      <workItem from="1733624327818" duration="23375000" />
+      <workItem from="1733624327818" duration="24239000" />
     </task>
     <servers />
   </component>
