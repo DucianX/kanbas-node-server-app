@@ -2,10 +2,13 @@
 // DAO的理解：类似于java的get等方法，暴露了API，充当数据库和客户端之间的桥梁
 // 如果数据库更改，客户端的业务逻辑不需要更改，只需要更改DAO的implementation
 // 提供了一种【集中】管理所有数据访问逻辑的方式
-import Database from "../Database/index.js";
+// import Database from "../Database/index.js";
+import model from "./model.js";
+
 export function findAllCourses() {
-  return Database.courses;
+  return model.find();
 }
+
 export function findCoursesForEnrolledUser(userId) {
   const { courses, enrollments } = Database;
   const enrolledCourses = courses.filter((course) => // 遍历所有课程，返回的是符合条件的课程
@@ -15,16 +18,24 @@ export function findCoursesForEnrolledUser(userId) {
   return enrolledCourses;
 }
 export function createCourse(course) {
-  const newCourse = { ...course, _id: Date.now().toString() };
-  Database.courses = [...Database.courses, newCourse];
-  return newCourse;
+  delete course._id;
+  return model.create(course);
+  // const newCourse = { ...course, _id: Date.now().toString() };
+  // Database.courses = [...Database.courses, newCourse];
+  // return newCourse;
 }
+
+// 旧的方法，从本地读取的数据
+// export function deleteCourse(courseId) {
+//   const { courses, enrollments } = Database;
+//   Database.courses = courses.filter((course) => course._id !== courseId);
+//   Database.enrollments = enrollments.filter(
+//     (enrollment) => enrollment.course !== courseId
+//   );}
 export function deleteCourse(courseId) {
-  const { courses, enrollments } = Database;
-  Database.courses = courses.filter((course) => course._id !== courseId);
-  Database.enrollments = enrollments.filter(
-    (enrollment) => enrollment.course !== courseId
-  );}
+  return model.deleteOne({ _id: courseId });
+}
+
 export function updateCourse(courseId, courseUpdates) {
   const { courses } = Database;
   const course = courses.find((course) => course._id === courseId);
