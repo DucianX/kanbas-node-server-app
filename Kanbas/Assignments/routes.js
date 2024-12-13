@@ -2,22 +2,22 @@ import * as dao from "./dao.js";
 import * as coursesDao from "../Courses/dao.js";
 import {deleteAssignment} from "./dao.js";
 export default function AssignmentRoutes(app) {
-
+  // 重点：从数据库返回的内容一定要async
   // 获得一个course的全部assignment
-  app.get("/api/assignments/:courseId/assignments", (req, res) => {
+  app.get("/api/assignments/:courseId/assignments", async (req, res) => {
     const {courseId} = req.params;
-    const assignments = dao.findAssignmentsForCourse(courseId);
+    const assignments = await dao.findAssignmentsForCourse(courseId);
     res.json(assignments);
   });
 
   // 创建一个新的assignment给当前的课程
-  app.post("/api/assignments/:courseId/assignments", (req, res) => {
+  app.post("/api/assignments/:courseId/assignments", async (req, res) => {
     const { courseId } = req.params;
     const assignment = {
       ...req.body,
       course: courseId,
     };
-    const newAssignment = dao.createAssignment(assignment);
+    const newAssignment = await dao.createAssignment(assignment);
     res.send(newAssignment);
   });
 
