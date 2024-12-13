@@ -3,9 +3,9 @@ import * as dao from "./dao.js";
 export default function EnrollmentRoutes(app) {
   app.post("/api/courses/:courseId/createEnrollment", (req, res) => {
 
-    const {courseId} = req.params;
-    const {userId} = req.body;
-
+    const {enrollment} = req.body;
+    const {userId} = enrollment.user;
+    const {courseId} = enrollment.course;
     dao.enrollUserInCourse(userId, courseId);
     res.send("Enrollment created successfully");
   })

@@ -2,8 +2,7 @@
 // 对应着什么样的路径来调用DAO,接收dao返回的数据然后把这些内容放进app的回调函数(res.send or res.json)里面
 // 并且，routes需要挂载到express的应用实例上面才能被识别处理
 import * as dao from "./dao.js";
-import * as fmodulesDao from "../Modules/dao.js";
-
+import * as modulesDao from "../Modules/dao.js";
 export default function CourseRoutes(app) {
   app.get("/api/courses/:courseId/modules", async (req, res) => {
     const { courseId } = req.params;
