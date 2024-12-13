@@ -20,7 +20,11 @@ export function createAssignment(assignment) {
 }
 
 // 定义：传入一个id，删除id在database里对应的assignment，返回状态
-export const deleteAssignment = (assignmentId) => model.deleteOne({ _id: assignmentId });
+export function deleteAssignment(assignmentId) {
+  // debug:用console打命令行！！
+  console.log("deleteID:" , assignmentId);
+  return model.deleteOne({ _id: assignmentId });
+}
 
 
 // 定义：根据传入的id和修改过的assignment修改数据库里的assignment,并且返回修改过的assignment

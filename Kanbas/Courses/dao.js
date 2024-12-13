@@ -17,9 +17,9 @@ export function findCoursesForEnrolledUser(userId) {
     enrollments.some((enrollment) => enrollment.user === userId && enrollment.course === course._id));
   return enrolledCourses;
 }
-export function createCourse(course) {
+export async function createCourse(course)  {
   delete course._id;
-  return model.create(course);
+  return await model.create(course);
   // const newCourse = { ...course, _id: Date.now().toString() };
   // Database.courses = [...Database.courses, newCourse];
   // return newCourse;
@@ -36,8 +36,8 @@ export function deleteCourse(courseId) {
   return model.deleteOne({ _id: courseId });
 }
 
-export function updateCourse(courseId, courseUpdates) {
-  return model.updateOne({ _id: courseId }, { $set: courseUpdates });
+export async function updateCourse(courseId, courseUpdates)  {
+  return await model.updateOne({ _id: courseId }, { $set: courseUpdates });
 
   // const { courses } = Database;
   // const course = courses.find((course) => course._id === courseId);
