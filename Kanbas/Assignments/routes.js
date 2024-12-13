@@ -17,7 +17,11 @@ export default function AssignmentRoutes(app) {
       ...req.body,
       course: courseId,
     };
+    console.log("新建作业接收:", assignment); // 打印返回值
+
+
     const newAssignment = await dao.createAssignment(assignment);
+    console.log("新建作业返回:", newAssignment); // 打印返回值
     res.send(newAssignment);
   });
 

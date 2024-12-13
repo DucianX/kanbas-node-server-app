@@ -16,7 +16,6 @@ export function createAssignment(assignment) {
   delete assignment._id;
   // return model.create(assignment);
   const createdAssignment = model.create(assignment);
-  console.log("创建的作业:", createdAssignment); // 打印插入结果
   return createdAssignment;
 }
 

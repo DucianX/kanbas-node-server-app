@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kanbas/Assignments/dao.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Assignments/dao.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Kanbas/Assignments/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Assignments/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Kanbas/Assignments/schema.js" beforeDir="false" afterPath="$PROJECT_DIR$/Kanbas/Assignments/schema.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +172,7 @@
       <workItem from="1733281742626" duration="5328000" />
       <workItem from="1733360411428" duration="472000" />
       <workItem from="1733369537220" duration="25432000" />
-      <workItem from="1733624327818" duration="56693000" />
+      <workItem from="1733624327818" duration="57998000" />
     </task>
     <servers />
   </component>
